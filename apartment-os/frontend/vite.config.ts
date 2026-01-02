@@ -11,6 +11,12 @@ const __dirname = path.dirname(__filename);
 
 export default defineConfig({
   plugins: [react()],
+  test: {
+    globals: true,
+    environment: "jsdom",
+    setupFiles: "./src/setupTests.ts",
+    css: true,
+  },
   resolve: {
     alias: {
       "@": fileURLToPath(new URL("./src", import.meta.url)),
@@ -18,4 +24,4 @@ export default defineConfig({
       "@pages": path.resolve(__dirname, "src/pages"),
     },
   },
-});
+} as any);
