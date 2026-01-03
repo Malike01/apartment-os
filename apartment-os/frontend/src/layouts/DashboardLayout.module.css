@@ -1,0 +1,33 @@
+.mainLayout {
+  min-height: 100vh;
+}
+
+.logo {
+  height: 32px;
+  margin: 16px;
+  background: rgba(255, 255, 255, 0.2);
+  text-align: center;
+  color: white;
+  line-height: 32px;
+  font-weight: bold;
+}
+
+.header {
+  padding: 0 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.welcomeText {
+  font-weight: 500;
+}
+
+.content {
+  margin: 24px 16px 0;
+}
+
+.contentInner {
+  padding: 24px;
+  min-height: 360px;
+}

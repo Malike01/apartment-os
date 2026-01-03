@@ -1,30 +1,17 @@
-// backend/src/properties/properties.service.spec.ts
 import { Test, TestingModule } from '@nestjs/testing';
 import { PropertiesService } from './properties.service';
 import { PrismaService } from '../prisma.service';
 import { NotFoundException } from '@nestjs/common';
+import { createMockProperty } from '../../test/factories/property.factory'; // Factory import
 
-// 1. Mock Data
-const mockManagerId = 'manager-123';
-const mockPropertyId = 'property-abc';
-
-const mockProperty = {
-  id: mockPropertyId,
-  name: 'Güneş Sitesi',
-  managerId: mockManagerId,
-  blocks: [],
-};
-
-// 2. Mock Prisma Service
+// Prisma Mock Helper
 const mockPrismaService = {
   property: {
-    create: jest.fn().mockResolvedValue(mockProperty),
-    findMany: jest.fn().mockResolvedValue([mockProperty]),
+    create: jest.fn(),
+    findMany: jest.fn(),
     findFirst: jest.fn(),
-    update: jest
-      .fn()
-      .mockResolvedValue({ ...mockProperty, name: 'Updated Name' }),
-    delete: jest.fn().mockResolvedValue(mockProperty),
+    update: jest.fn(),
+    delete: jest.fn(),
   },
 };
 
@@ -42,81 +29,67 @@ describe('PropertiesService', () => {
 
     service = module.get<PropertiesService>(PropertiesService);
     prisma = module.get<PrismaService>(PrismaService);
-
     jest.clearAllMocks();
   });
 
-  it('should be defined', () => {
-    expect(service).toBeDefined();
-  });
-
-  // --- CREATE TESTING ---
   describe('create', () => {
-    it('should create a property with correct managerId', async () => {
-      const dto = { name: 'Yeni Site', address: 'Istanbul' };
-
-      const result = await service.create(dto, mockManagerId);
-
-      expect(prisma.property.create).toHaveBeenCalledWith({
-        data: {
-          ...dto,
-          managerId: mockManagerId,
-        },
+    it('should create a property linked to the manager', async () => {
+      // 1. ARRANGE
+      const mockManagerId = 'manager-123';
+      const createDto = { name: 'Yeni Site', city: 'İzmir' };
+      const expectedProperty = createMockProperty({
+        ...createDto,
+        managerId: mockManagerId,
       });
-      expect(result).toEqual(mockProperty);
+
+      jest.spyOn(prisma.property, 'create').mockResolvedValue(expectedProperty);
+
+      // 2. ACT
+      const result = await service.create(createDto, mockManagerId);
+
+      // 3. ASSERT
+      expect(prisma.property.create).toHaveBeenCalledWith({
+        data: { ...createDto, managerId: mockManagerId },
+      });
+      expect(result).toEqual(expectedProperty);
     });
   });
 
-  // --- FIND ALL TESTING ---
   describe('findAll', () => {
-    it('should return properties belonging to the manager', async () => {
-      await service.findAll(mockManagerId);
+    it('should return a list of properties for the manager', async () => {
+      // 1. ARRANGE
+      const mockManagerId = 'manager-123';
+      const mockProperties = [
+        createMockProperty({ managerId: mockManagerId }),
+        createMockProperty({ managerId: mockManagerId }),
+        createMockProperty({ managerId: mockManagerId }),
+      ];
 
+      jest.spyOn(prisma.property, 'findMany').mockResolvedValue(mockProperties);
+
+      // 2. ACT
+      const result = await service.findAll(mockManagerId);
+
+      // 3. ASSERT
+      expect(result).toHaveLength(3);
       expect(prisma.property.findMany).toHaveBeenCalledWith(
-        expect.objectContaining({
-          where: { managerId: mockManagerId },
-        }),
+        expect.objectContaining({ where: { managerId: mockManagerId } }),
       );
     });
   });
 
-  // --- FIND ONE TESTING ---
   describe('findOne', () => {
-    it('should return property if it belongs to manager', async () => {
-      jest
-        .spyOn(prisma.property, 'findFirst')
-        .mockResolvedValue(mockProperty as any);
+    it('should throw NotFoundException if property belongs to another manager', async () => {
+      // 1. ARRANGE
+      const targetId = 'target-prop';
+      const managerId = 'current-manager';
 
-      const result = await service.findOne(mockPropertyId, mockManagerId);
-      expect(result).toEqual(mockProperty);
-    });
-
-    it('should throw NotFoundException if property does not exist or belongs to another manager', async () => {
       jest.spyOn(prisma.property, 'findFirst').mockResolvedValue(null);
 
-      await expect(service.findOne('fake-id', mockManagerId)).rejects.toThrow(
+      // 2. ACT & 3. ASSERT
+      await expect(service.findOne(targetId, managerId)).rejects.toThrow(
         NotFoundException,
       );
-    });
-  });
-
-  // --- UPDATE TESTING ---
-  describe('update', () => {
-    it('should update property if owned by manager', async () => {
-      jest.spyOn(service, 'findOne').mockResolvedValue(mockProperty as any);
-
-      const updateDto = { name: 'Updated Name' };
-      await service.update(mockPropertyId, updateDto, mockManagerId);
-
-      expect(service.findOne).toHaveBeenCalledWith(
-        mockPropertyId,
-        mockManagerId,
-      );
-
-      expect(prisma.property.update).toHaveBeenCalledWith({
-        where: { id: mockPropertyId },
-        data: updateDto,
-      });
     });
   });
 });

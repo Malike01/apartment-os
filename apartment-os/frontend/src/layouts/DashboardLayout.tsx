@@ -1,13 +1,10 @@
 import React from "react";
 import { Layout, Menu, Button, theme } from "antd";
-import {
-  HomeOutlined,
-  UserOutlined,
-  LogoutOutlined,
-  BankOutlined,
-} from "@ant-design/icons";
+import { LogoutOutlined } from "@ant-design/icons";
 import { Outlet, useNavigate } from "react-router-dom";
 import { useAuthStore } from "../../store/authStore";
+import styles from "./DashboardLayout.module.css";
+import { SIDEBAR_MENU_ITEMS } from "../constants/dashboardMenu";
 
 const { Header, Sider, Content } = Layout;
 
@@ -25,52 +22,37 @@ export const DashboardLayout: React.FC = () => {
   };
 
   return (
-    <Layout style={{ minHeight: "100vh" }}>
+    <Layout className={styles.mainLayout}>
       <Sider breakpoint="lg" collapsedWidth="0">
-        <div
-          style={{
-            height: 32,
-            margin: 16,
-            background: "rgba(255, 255, 255, 0.2)",
-            textAlign: "center",
-            color: "white",
-            lineHeight: "32px",
-            fontWeight: "bold",
-          }}
-        >
+        <div className={styles.logo}>
           ApartmentOS
         </div>
         <Menu
           theme="dark"
           mode="inline"
           defaultSelectedKeys={["1"]}
-          items={[
-            { key: "1", icon: <HomeOutlined />, label: "Genel Bakış" },
-            { key: "2", icon: <BankOutlined />, label: "Sitelerim" },
-            { key: "3", icon: <UserOutlined />, label: "Sakinler" },
-          ]}
+          items={SIDEBAR_MENU_ITEMS.map((item) => ({
+            key: item.key,
+            icon: item.icon,
+            label: item.label,
+            onClick: item.path ? () => navigate(item.path!) : undefined,
+          }))}
         />
       </Sider>
       <Layout>
         <Header
-          style={{
-            padding: "0 16px",
-            background: colorBgContainer,
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
+          className={styles.header}
+          style={{ background: colorBgContainer }}
         >
-          <span style={{ fontWeight: 500 }}>Hoşgeldin, {user?.email}</span>
+          <span className={styles.welcomeText}>Hoşgeldin, {user?.email}</span>
           <Button type="text" icon={<LogoutOutlined />} onClick={handleLogout}>
             Çıkış
           </Button>
         </Header>
-        <Content style={{ margin: "24px 16px 0" }}>
+        <Content className={styles.content}>
           <div
+            className={styles.contentInner}
             style={{
-              padding: 24,
-              minHeight: 360,
               background: colorBgContainer,
               borderRadius: borderRadiusLG,
             }}

@@ -32,6 +32,13 @@ const Dashboard = lazy(() =>
   }))
 );
 
+// Properties Page
+const Properties = lazy(() =>
+  import("@/pages/properties/index").then((module) => ({
+    default: module.default,
+  }))
+);
+
 function App() {
   return (
     <Suspense
@@ -50,6 +57,7 @@ function App() {
         <Route element={<RequireAuth />}>
           <Route element={<MainLayout />}>
             <Route path="/" element={<Dashboard />} />
+            <Route path="/properties" element={<Properties />} />
           </Route>
         </Route>
 
