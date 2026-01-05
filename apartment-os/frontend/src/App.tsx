@@ -39,6 +39,12 @@ const Properties = lazy(() =>
   }))
 );
 
+const PropertyDetail = lazy(() =>
+  import("./pages/properties/PropertyDetail").then((module) => ({
+    default: module.default,
+  }))
+);
+
 function App() {
   return (
     <Suspense
@@ -58,6 +64,7 @@ function App() {
           <Route element={<MainLayout />}>
             <Route path="/" element={<Dashboard />} />
             <Route path="/properties" element={<Properties />} />
+            <Route path="/properties/:id" element={<PropertyDetail />} />
           </Route>
         </Route>
 

@@ -9,6 +9,7 @@ import { propertyService } from "../../api/services/propertyService";
 import { PropertyFormModal } from "./components/PropertyFormModal";
 import { COLORS } from "../../constants";
 import type { Property } from "@/types/property";
+import { useNavigate } from "react-router-dom";
 
 const { Title, Text } = Typography;
 
@@ -16,6 +17,8 @@ const Properties: React.FC = () => {
   const [properties, setProperties] = useState<Property[]>([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const navigate = useNavigate();
 
   const fetchProperties = async () => {
     setLoading(true);
@@ -79,7 +82,12 @@ const Properties: React.FC = () => {
                 hoverable
                 actions={[
                   <Tooltip title="Detaylar">
-                    <Button type="link">Yönet</Button>
+                    <Button
+                      type="link"
+                      onClick={() => navigate(`/properties/${property.id}`)}
+                    >
+                      Yönet
+                    </Button>
                   </Tooltip>,
                   <Tooltip title="Ayarlar">
                     <Button type="link">Düzenle</Button>
