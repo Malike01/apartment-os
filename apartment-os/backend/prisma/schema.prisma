@@ -46,6 +46,8 @@ model Block {
   name       String   // Example: "A Bloke"
   propertyId String
   property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
   
   units      Unit[]
 
@@ -61,6 +63,9 @@ model Unit {
   
   blockId    String
   block      Block    @relation(fields: [blockId], references: [id], onDelete: Cascade)
+
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
   residents  Resident[]
   
