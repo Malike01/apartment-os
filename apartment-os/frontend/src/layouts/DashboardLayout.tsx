@@ -2,7 +2,7 @@ import React from "react";
 import { Layout, Menu, Button, theme } from "antd";
 import { LogoutOutlined } from "@ant-design/icons";
 import { Outlet, useNavigate } from "react-router-dom";
-import { useAuthStore } from "../../store/authStore";
+import { useAuthStore } from "../store/authStore";
 import styles from "./DashboardLayout.module.css";
 import { SIDEBAR_MENU_ITEMS } from "../constants/dashboardMenu";
 
@@ -24,9 +24,7 @@ export const DashboardLayout: React.FC = () => {
   return (
     <Layout className={styles.mainLayout}>
       <Sider breakpoint="lg" collapsedWidth="0">
-        <div className={styles.logo}>
-          ApartmentOS
-        </div>
+        <div className={styles.logo}>ApartmentOS</div>
         <Menu
           theme="dark"
           mode="inline"

@@ -1,9 +1,9 @@
 import { screen, waitFor } from "@testing-library/react";
-import { render } from "../../../test/utils";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { propertyService } from "../../api/services/propertyService";
 import { createMockProperty } from "../../../test/factories/propertyFactory";
 import Properties from ".";
+import { render } from "@/test/utils";
 
 vi.mock("../../api/services/propertyService");
 

@@ -2,7 +2,7 @@ import { lazy, Suspense } from "react";
 import { Navigate, Outlet, Route, Routes } from "react-router-dom";
 import { Spin } from "antd";
 import "antd/dist/reset.css";
-import { useAuthStore } from "../store/authStore";
+import { useAuthStore } from "./store/authStore";
 import "./App.css";
 
 // Layout
@@ -45,6 +45,10 @@ const PropertyDetail = lazy(() =>
   }))
 );
 
+const FinancePage = lazy(() =>
+  import("@/pages/finance/index").then((m) => ({ default: m.default }))
+);
+
 function App() {
   return (
     <Suspense
@@ -65,6 +69,7 @@ function App() {
             <Route path="/" element={<Dashboard />} />
             <Route path="/properties" element={<Properties />} />
             <Route path="/properties/:id" element={<PropertyDetail />} />
+            <Route path="/finance" element={<FinancePage />} />
           </Route>
         </Route>
 
