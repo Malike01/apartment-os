@@ -45,6 +45,10 @@ const PropertyDetail = lazy(() =>
   }))
 );
 
+const FinancePage = lazy(() =>
+  import("@/pages/finance/index").then((m) => ({ default: m.default }))
+);
+
 function App() {
   return (
     <Suspense
@@ -65,6 +69,7 @@ function App() {
             <Route path="/" element={<Dashboard />} />
             <Route path="/properties" element={<Properties />} />
             <Route path="/properties/:id" element={<PropertyDetail />} />
+            <Route path="/finance" element={<FinancePage />} />
           </Route>
         </Route>
 
