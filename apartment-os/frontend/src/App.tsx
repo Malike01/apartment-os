@@ -2,7 +2,7 @@ import { lazy, Suspense } from "react";
 import { Navigate, Outlet, Route, Routes } from "react-router-dom";
 import { Spin } from "antd";
 import "antd/dist/reset.css";
-import { useAuthStore } from "../store/authStore";
+import { useAuthStore } from "./store/authStore";
 import "./App.css";
 
 // Layout

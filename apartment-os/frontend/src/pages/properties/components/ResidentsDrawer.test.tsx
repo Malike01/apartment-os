@@ -4,7 +4,7 @@ import { ResidentsDrawer } from "./ResidentsDrawer";
 import { residentService } from "../../../api/services/residentService";
 import { createMockResident } from "../../../../test/factories/residentFactory";
 import { ResidentType } from "../../../types/resident";
-import { render } from "test/utils";
+import { render } from "@/test/utils";
 
 vi.mock("../../../api/services/residentService");
 

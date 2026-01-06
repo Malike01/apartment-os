@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useAuthStore } from "../../store/authStore";
+import { useAuthStore } from "../store/authStore";
 import { message } from "antd";
 
 const api = axios.create({

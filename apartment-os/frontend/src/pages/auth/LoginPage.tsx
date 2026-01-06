@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { message } from "antd";
 import { useNavigate } from "react-router-dom";
 import api from "../../api/axios";
-import { useAuthStore } from "../../../store/authStore";
+import { useAuthStore } from "../../store/authStore";
 import { AuthForm } from "./components/AuthForm";
 
 const LoginPage: React.FC = () => {

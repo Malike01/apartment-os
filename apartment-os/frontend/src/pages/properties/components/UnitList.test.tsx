@@ -1,8 +1,7 @@
-import { screen, waitFor, fireEvent } from "@testing-library/react";
+import { screen, waitFor, fireEvent, render } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { UnitList } from "./UnitList";
 import { inventoryService } from "../../../api/services/inventoryService";
-import { render } from "test/utils";
 import { createMockUnit } from "test/factories/inventoryFactory";
 
 vi.mock("../../../api/services/inventoryService");
