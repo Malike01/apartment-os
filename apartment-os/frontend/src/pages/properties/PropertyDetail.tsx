@@ -1,15 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import {
-  Button,
-  Card,
-  Breadcrumb,
-  Tabs,
-  Empty,
-  Spin,
-  Typography,
-  message,
-} from "antd";
+import { Button, Card, Breadcrumb, Tabs, Empty, Spin, Typography } from "antd";
 import {
   ArrowLeftOutlined,
   PlusOutlined,
@@ -20,6 +11,7 @@ import { inventoryService } from "../../api/services/inventoryService";
 import { BlockFormModal } from "./components/BlockFormModal";
 import { UnitList } from "./components/UnitList";
 import type { Block, Property } from "@/types/property";
+import { useFetch } from "@/hooks/useFetch";
 
 const { Title, Text } = Typography;
 
@@ -27,30 +19,18 @@ const PropertyDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
-  const [property, setProperty] = useState<Property | null>(null);
-  const [blocks, setBlocks] = useState<Block[]>([]);
-  const [loading, setLoading] = useState(true);
   const [isBlockModalOpen, setIsBlockModalOpen] = useState(false);
 
-  const fetchData = async () => {
-    if (!id) return;
-    try {
-      const [propData, blocksData] = await Promise.all([
-        propertyService.getById(id),
-        inventoryService.getBlocksByProperty(id),
-      ]);
-      setProperty(propData);
-      setBlocks(blocksData);
-    } catch (error) {
-      message.error("Veriler yüklenemedi");
-    } finally {
-      setLoading(false);
-    }
-  };
+  const { data, loading, refetch } = useFetch<[Property, Block[]]>(() => {
+    if (!id) return Promise.reject("No ID");
 
-  useEffect(() => {
-    fetchData();
+    return Promise.all([
+      propertyService.getById(id),
+      inventoryService.getBlocksByProperty(id),
+    ]);
   }, [id]);
+
+  const [property, blocks] = data || [null, []];
 
   if (loading)
     return (
@@ -130,7 +110,7 @@ const PropertyDetail: React.FC = () => {
         <BlockFormModal
           open={isBlockModalOpen}
           onCancel={() => setIsBlockModalOpen(false)}
-          onSuccess={fetchData}
+          onSuccess={refetch}
           propertyId={id}
         />
       )}

@@ -22,6 +22,7 @@ import {
 import { residentService } from "../../../api/services/residentService";
 import { RESIDENT_TYPE_OPTIONS } from "../../../constants";
 import { ResidentType, type Resident } from "@/types/resident";
+import { useFetch } from "@/hooks/useFetch";
 
 const { Text } = Typography;
 
@@ -38,44 +39,24 @@ export const ResidentsDrawer: React.FC<ResidentsDrawerProps> = ({
   unitId,
   unitLabel,
 }) => {
-  const [residents, setResidents] = useState<Resident[]>([]);
-  const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
-
-  const fetchResidents = async () => {
-    if (!unitId) return;
-    setLoading(true);
-    try {
-      const data = await residentService.getByUnit(unitId);
-      setResidents(data);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    if (open && unitId) {
-      fetchResidents();
-    } else {
-      setResidents([]);
-      form.resetFields();
-    }
-  }, [open, unitId]);
+  const {
+    data: residents,
+    loading,
+    refetch,
+  } = useFetch(
+    () => (unitId ? residentService.getByUnit(unitId) : Promise.resolve([])),
+    [unitId]
+  );
 
   const handleAddResident = async (values: any) => {
-    if (!unitId) return;
-    setLoading(true);
     try {
       await residentService.create({ ...values, unitId });
       message.success("Sakin eklendi");
       form.resetFields();
-      fetchResidents();
+      refetch();
     } catch (error) {
       message.error("Sakin eklenemedi");
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -83,7 +64,7 @@ export const ResidentsDrawer: React.FC<ResidentsDrawerProps> = ({
     try {
       await residentService.delete(id);
       message.success("Sakin silindi");
-      fetchResidents();
+      refetch();
     } catch (error) {
       message.error("Silme işlemi başarısız");
     }
@@ -95,12 +76,13 @@ export const ResidentsDrawer: React.FC<ResidentsDrawerProps> = ({
       placement="right"
       onClose={onClose}
       open={open}
+      destroyOnHidden={true}
       width={400}
     >
       <List
         loading={loading}
         itemLayout="horizontal"
-        dataSource={residents}
+        dataSource={residents || []}
         locale={{ emptyText: "Bu dairede kayıtlı sakin yok." }}
         renderItem={(item) => (
           <List.Item
