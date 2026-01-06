@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  # 1. DATABASE
+  db:
+    image: postgres:15-alpine
+    container_name: site-yonetim-db
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: site_manager
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+  # 2. BACKEND (API)
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: site-yonetim-api
+    depends_on:
+      - db
+    ports:
+      - '3000:3000'
+    environment:
+      DATABASE_URL: 'postgresql://user:password@db:5432/site_manager?schema=public'
+      JWT_SECRET: 'cok_gizli_super_secret_key'
+      NODE_ENV: 'production'
+    networks:
+      - app-network
+
+  # 3. FRONTEND (UI)
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: site-yonetim-ui
+    depends_on:
+      - backend
+    ports:
+      - '80:80'
+    networks:
+      - app-network
+
+volumes:
+  postgres_data:
+
+networks:
+  app-network:
+    driver: bridge
