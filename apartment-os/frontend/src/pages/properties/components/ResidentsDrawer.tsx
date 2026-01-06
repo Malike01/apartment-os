@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {
   Drawer,
   List,
@@ -21,7 +21,7 @@ import {
 } from "@ant-design/icons";
 import { residentService } from "../../../api/services/residentService";
 import { RESIDENT_TYPE_OPTIONS } from "../../../constants";
-import { ResidentType, type Resident } from "@/types/resident";
+import { ResidentType } from "@/types/resident";
 import { useFetch } from "@/hooks/useFetch";
 
 const { Text } = Typography;

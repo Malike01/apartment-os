@@ -69,6 +69,7 @@ export const APP_ROUTES = {
   PROPERTIES: "/properties",
   CUSTOMERS: "/customers",
   USERS: "/users",
+  FINANCE: "/finance",
 };
 
 // --- ROLES & PERMISSIONS ---
