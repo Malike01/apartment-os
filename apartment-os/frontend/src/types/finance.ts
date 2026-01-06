@@ -35,3 +35,9 @@ export interface FinanceStats {
   expense: number;
   balance: number;
 }
+export interface CreateBulkTransactionDto {
+  propertyId: string;
+  amount: number;
+  description: string;
+  category: string;
+}

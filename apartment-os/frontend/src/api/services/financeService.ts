@@ -1,4 +1,5 @@
 import type {
+  CreateBulkTransactionDto,
   CreateTransactionDto,
   FinanceStats,
   Transaction,
@@ -22,6 +23,11 @@ export const financeService = {
 
   create: async (data: CreateTransactionDto) => {
     const response = await api.post<Transaction>("/transactions", data);
+    return response.data;
+  },
+
+  createBulk: async (data: CreateBulkTransactionDto) => {
+    const response = await api.post("/transactions/bulk", data);
     return response.data;
   },
 };

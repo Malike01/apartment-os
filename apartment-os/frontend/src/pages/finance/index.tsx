@@ -1,15 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { Select, Table, Button, Tag, Typography, Card, Empty } from "antd";
 import { PlusOutlined, BankOutlined } from "@ant-design/icons";
-// Servisler ve Hooklar
 import { propertyService } from "../../api/services/propertyService";
 import { financeService } from "../../api/services/financeService";
 import { useFetch } from "../../hooks/useFetch";
-// Bileşenler ve Tipler
 import { StatsCards } from "./components/StatsCards";
 import { TransactionFormModal } from "./components/TransactionFormModal";
 import { type Transaction, TransactionType } from "../../types/finance";
 import { COLORS } from "../../constants";
+import { BulkDuesModal } from "./components/BulkDuesModal";
 
 const { Title, Text } = Typography;
 
@@ -23,6 +22,9 @@ const FinancePage: React.FC = () => {
     null
   );
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isBulkModalOpen, setIsBulkModalOpen] = useState(false);
+
+  const selectedProperty = properties?.find((p) => p.id === selectedPropertyId);
 
   useEffect(() => {
     if (properties && properties.length > 0 && !selectedPropertyId) {
@@ -161,6 +163,15 @@ const FinancePage: React.FC = () => {
           onCancel={() => setIsModalOpen(false)}
           onSuccess={refreshData}
           propertyId={selectedPropertyId}
+        />
+      )}
+      {selectedPropertyId && (
+        <BulkDuesModal
+          open={isBulkModalOpen}
+          onCancel={() => setIsBulkModalOpen(false)}
+          onSuccess={refreshData}
+          propertyId={selectedPropertyId}
+          propertyName={selectedProperty?.name || ""}
         />
       )}
     </div>
