@@ -1,33 +1,22 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Table, Button, Space, Tag, Popconfirm } from "antd";
 import { PlusOutlined, DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { inventoryService } from "../../../api/services/inventoryService";
 import { UnitFormModal } from "./UnitFormModal";
-import type { Unit } from "@/types/inventory";
+import { useFetch } from "@/hooks/useFetch";
 
 interface UnitListProps {
   blockId: string;
 }
 
 export const UnitList: React.FC<UnitListProps> = ({ blockId }) => {
-  const [units, setUnits] = useState<Unit[]>([]);
-  const [loading, setLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const fetchUnits = async () => {
-    setLoading(true);
-    try {
-      const data = await inventoryService.getUnitsByBlock(blockId);
-      setUnits(data);
-    } catch (error) {
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchUnits();
-  }, [blockId]);
+  const {
+    data: units,
+    loading,
+    refetch,
+  } = useFetch(() => inventoryService.getUnitsByBlock(blockId), [blockId]);
 
   const columns = [
     {
@@ -85,7 +74,7 @@ export const UnitList: React.FC<UnitListProps> = ({ blockId }) => {
       </div>
 
       <Table
-        dataSource={units}
+        dataSource={units || []}
         columns={columns}
         rowKey="id"
         loading={loading}
@@ -96,7 +85,7 @@ export const UnitList: React.FC<UnitListProps> = ({ blockId }) => {
       <UnitFormModal
         open={isModalOpen}
         onCancel={() => setIsModalOpen(false)}
-        onSuccess={fetchUnits}
+        onSuccess={refetch}
         blockId={blockId}
       />
     </>

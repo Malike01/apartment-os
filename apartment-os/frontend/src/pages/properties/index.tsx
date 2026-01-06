@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Button, Card, Col, Row, Typography, Empty, Spin, Tooltip } from "antd";
 import {
   PlusOutlined,
@@ -10,30 +10,20 @@ import { PropertyFormModal } from "./components/PropertyFormModal";
 import { COLORS } from "../../constants";
 import type { Property } from "@/types/property";
 import { useNavigate } from "react-router-dom";
+import { useFetch } from "@/hooks/useFetch";
 
 const { Title, Text } = Typography;
 
 const Properties: React.FC = () => {
-  const [properties, setProperties] = useState<Property[]>([]);
-  const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const navigate = useNavigate();
 
-  const fetchProperties = async () => {
-    setLoading(true);
-    try {
-      const data = await propertyService.getAll();
-      setProperties(data);
-    } catch (error) {
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchProperties();
-  }, []);
+  const {
+    data: properties,
+    loading,
+    refetch: fetchProperties,
+  } = useFetch<Property[]>(propertyService.getAll, []);
 
   return (
     <div>
@@ -65,7 +55,7 @@ const Properties: React.FC = () => {
         <div style={{ textAlign: "center", padding: 50 }}>
           <Spin size="large" />
         </div>
-      ) : properties.length === 0 ? (
+      ) : properties?.length === 0 ? (
         <Empty
           image={Empty.PRESENTED_IMAGE_SIMPLE}
           description="Henüz kayıtlı bir siteniz yok."
@@ -76,7 +66,7 @@ const Properties: React.FC = () => {
         </Empty>
       ) : (
         <Row gutter={[16, 16]}>
-          {properties.map((property) => (
+          {properties?.map((property) => (
             <Col xs={24} sm={12} md={8} lg={6} key={property.id}>
               <Card
                 hoverable
