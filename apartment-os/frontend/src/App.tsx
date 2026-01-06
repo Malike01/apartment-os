@@ -28,7 +28,7 @@ const Register = lazy(() =>
 // Dashboard Pages
 const Dashboard = lazy(() =>
   import("@/pages/dashboard/index").then((module) => ({
-    default: module.Dashboard,
+    default: module.default,
   }))
 );
 

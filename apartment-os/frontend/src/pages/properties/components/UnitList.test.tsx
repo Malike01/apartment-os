@@ -2,7 +2,7 @@ import { screen, waitFor, fireEvent, render } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { UnitList } from "./UnitList";
 import { inventoryService } from "../../../api/services/inventoryService";
-import { createMockUnit } from "test/factories/inventoryFactory";
+import { createMockUnit } from "@/test/factories/inventoryFactory";
 
 vi.mock("../../../api/services/inventoryService");
 

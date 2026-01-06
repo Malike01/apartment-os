@@ -1,14 +1,32 @@
 import React, { useState, useEffect } from "react";
-import { Select, Table, Button, Tag, Typography, Card, Empty } from "antd";
-import { PlusOutlined, BankOutlined } from "@ant-design/icons";
+import {
+  Select,
+  Table,
+  Button,
+  Typography,
+  Card,
+  Empty,
+  message,
+  type MenuProps,
+  Dropdown,
+} from "antd";
+import {
+  PlusOutlined,
+  BankOutlined,
+  DownloadOutlined,
+} from "@ant-design/icons";
 import { propertyService } from "../../api/services/propertyService";
 import { financeService } from "../../api/services/financeService";
 import { useFetch } from "../../hooks/useFetch";
 import { StatsCards } from "./components/StatsCards";
 import { TransactionFormModal } from "./components/TransactionFormModal";
-import { type Transaction, TransactionType } from "../../types/finance";
-import { COLORS } from "../../constants";
+import {
+  FINANCE_COLUMNS,
+  getExportMenuItems,
+} from "../../constants/financePage";
 import { BulkDuesModal } from "./components/BulkDuesModal";
+import { reportService } from "@api/services/reportService";
+import { useAppStore } from "@/store/useAppStore";
 
 const { Title, Text } = Typography;
 
@@ -18,19 +36,24 @@ const FinancePage: React.FC = () => {
     []
   );
 
-  const [selectedPropertyId, setSelectedPropertyId] = useState<string | null>(
-    null
-  );
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isBulkModalOpen, setIsBulkModalOpen] = useState(false);
+
+  const { selectedPropertyId, setSelectedPropertyId } = useAppStore();
 
   const selectedProperty = properties?.find((p) => p.id === selectedPropertyId);
 
   useEffect(() => {
-    if (properties && properties.length > 0 && !selectedPropertyId) {
-      setSelectedPropertyId(properties[0].id);
+    if (properties && properties.length > 0) {
+      const isValidSelection = properties.find(
+        (p) => p.id === selectedPropertyId
+      );
+
+      if (!selectedPropertyId || !isValidSelection) {
+        setSelectedPropertyId(properties[0].id);
+      }
     }
-  }, [properties]);
+  }, [properties, selectedPropertyId, setSelectedPropertyId]);
 
   const {
     data: transactions,
@@ -61,45 +84,32 @@ const FinancePage: React.FC = () => {
     refetchStats();
   };
 
-  const columns = [
-    {
-      title: "Tarih",
-      dataIndex: "date",
-      key: "date",
-      render: (date: string) => new Date(date).toLocaleDateString("tr-TR"),
-    },
-    {
-      title: "Tip",
-      dataIndex: "type",
-      key: "type",
-      render: (type: TransactionType) => (
-        <Tag color={type === TransactionType.Income ? "green" : "red"}>
-          {type === TransactionType.Income ? "Gelir" : "Gider"}
-        </Tag>
-      ),
-    },
-    { title: "Kategori", dataIndex: "category", key: "category" },
-    { title: "Açıklama", dataIndex: "description", key: "description" },
-    {
-      title: "Tutar",
-      dataIndex: "amount",
-      key: "amount",
-      align: "right" as const,
-      render: (amount: number, record: Transaction) => (
-        <Text
-          strong
-          style={{
-            color:
-              record.type === TransactionType.Income
-                ? COLORS.SUCCESS
-                : COLORS.ERROR,
-          }}
-        >
-          {record.type === TransactionType.Income ? "+" : "-"} {amount} ₺
-        </Text>
-      ),
-    },
-  ];
+  const handleDownloadExcel = async () => {
+    if (!selectedPropertyId) return;
+    try {
+      message.loading({ content: "Excel hazırlanıyor...", key: "download" });
+      await reportService.downloadFinanceExcel(selectedPropertyId);
+      message.success({ content: "Excel indirildi.", key: "download" });
+    } catch (error) {
+      message.error({ content: "Hata oluştu.", key: "download" });
+    }
+  };
+
+  const handleDownloadPdf = async () => {
+    if (!selectedPropertyId) return;
+    try {
+      message.loading({ content: "PDF hazırlanıyor...", key: "download" });
+      await reportService.downloadFinancePdf(selectedPropertyId);
+      message.success({ content: "PDF indirildi.", key: "download" });
+    } catch (error) {
+      message.error({ content: "Hata oluştu.", key: "download" });
+    }
+  };
+
+  const exportMenu: MenuProps["items"] = getExportMenuItems(
+    handleDownloadExcel,
+    handleDownloadPdf
+  );
 
   return (
     <div>
@@ -117,7 +127,9 @@ const FinancePage: React.FC = () => {
           </Title>
           <Text type="secondary">Gelir ve giderlerinizi yönetin</Text>
         </div>
-
+        <Dropdown menu={{ items: exportMenu }} disabled={!selectedPropertyId}>
+          <Button icon={<DownloadOutlined />}>Dışa Aktar</Button>
+        </Dropdown>
         <div style={{ display: "flex", gap: 12 }}>
           <Select
             style={{ width: 250 }}
@@ -149,7 +161,7 @@ const FinancePage: React.FC = () => {
           <Card title="Son İşlemler" bodyStyle={{ padding: 0 }}>
             <Table
               dataSource={transactions || []}
-              columns={columns}
+              columns={FINANCE_COLUMNS}
               rowKey="id"
               loading={loadingTrans}
               pagination={{ pageSize: 10 }}
