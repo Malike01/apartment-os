@@ -9,9 +9,10 @@ import { BlocksModule } from './blocks/blocks.module';
 import { UnitsModule } from './units/units.module';
 import { ResidentsModule } from './residents/residents.module';
 import { TransactionsModule } from './transactions/transactions.module';
+import { DashboardModule } from './dashboard/dashboard.module';
 
 @Module({
-  imports: [UsersModule, AuthModule, PropertiesModule, BlocksModule, UnitsModule, ResidentsModule, TransactionsModule],
+  imports: [UsersModule, AuthModule, PropertiesModule, BlocksModule, UnitsModule, ResidentsModule, TransactionsModule, DashboardModule],
   controllers: [AppController],
   providers: [AppService, PrismaService],
 })

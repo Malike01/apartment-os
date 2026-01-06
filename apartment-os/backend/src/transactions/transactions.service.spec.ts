@@ -124,4 +124,91 @@ describe('TransactionsService', () => {
       expect(result.balance).toBe(600); // 1000 - 400 = 600
     });
   });
+
+  describe('createBulk', () => {
+    it('should create transactions for ALL units in the property', async () => {
+      // 1. ARRANGE
+      const managerId = 'manager-1';
+      const propertyId = 'prop-1';
+
+      const mockPropertyWithUnits = {
+        id: propertyId,
+        managerId,
+        blocks: [
+          {
+            units: [
+              { id: 'unit-1', doorNumber: '1' },
+              { id: 'unit-2', doorNumber: '2' },
+            ],
+          },
+        ],
+      };
+
+      jest
+        .spyOn(prisma.property, 'findFirst')
+        .mockResolvedValue(mockPropertyWithUnits as any);
+
+      jest
+        .spyOn(prisma.transaction, 'createMany')
+        .mockResolvedValue({ count: 2 });
+
+      // 2. ACT
+      const dto = {
+        propertyId,
+        amount: 500,
+        description: 'Ocak Aidat',
+        category: 'Aidat',
+      };
+
+      const result = await service.createBulk(dto, managerId);
+
+      // 3. ASSERT
+      expect(result.count).toBe(2);
+
+      expect(prisma.transaction.createMany).toHaveBeenCalledWith({
+        data: expect.arrayContaining([
+          expect.objectContaining({ unitId: 'unit-1', amount: 500 }),
+          expect.objectContaining({ unitId: 'unit-2', amount: 500 }),
+        ]),
+      });
+    });
+
+    it('should throw ForbiddenException if property does not belong to manager', async () => {
+      jest.spyOn(prisma.property, 'findFirst').mockResolvedValue(null);
+
+      const dto = {
+        propertyId: 'fake',
+        amount: 100,
+        description: 'Test',
+        category: 'Test',
+      };
+
+      await expect(service.createBulk(dto, 'manager-1')).rejects.toThrow(
+        ForbiddenException,
+      );
+    });
+
+    it('should throw BadRequestException if property has NO units', async () => {
+      const emptyProperty = {
+        id: 'prop-1',
+        managerId: 'manager-1',
+        blocks: [],
+      };
+
+      jest
+        .spyOn(prisma.property, 'findFirst')
+        .mockResolvedValue(emptyProperty as any);
+
+      const dto = {
+        propertyId: 'prop-1',
+        amount: 100,
+        description: 'Test',
+        category: 'Test',
+      };
+
+      await expect(service.createBulk(dto, 'manager-1')).rejects.toThrow(
+        BadRequestException,
+      );
+    });
+  });
 });
