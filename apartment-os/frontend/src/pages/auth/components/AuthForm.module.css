@@ -1,0 +1,88 @@
+.container {
+  display: flex;
+  height: 90vh;
+  overflow: hidden;
+}
+
+.leftPanel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  padding: 40px;
+  margin: 20px;
+  border-radius: 12px;
+}
+
+.leftPanelContent {
+  text-align: center;
+}
+
+.logoEmoji {
+  font-size: 60px;
+  margin-bottom: 20px;
+}
+
+.welcomeTitle {
+  color: white !important;
+  margin: 0 !important;
+}
+
+.welcomeSubtitle {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 16px;
+  display: block;
+  margin-top: 10px;
+}
+
+.rightPanel {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #fff;
+}
+
+.formWrapper {
+  width: 100%;
+  max-width: 420px;
+  padding: 24px;
+}
+
+.formHeader {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.formTitle {
+  margin-bottom: 8px !important;
+}
+
+.rememberContainer {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.submitButton {
+  height: 45px;
+  font-size: 16px;
+}
+
+.footer {
+  text-align: center;
+}
+
+.link {
+  font-weight: 600;
+}
+
+.submitItem {
+  margin-top: 24px;
+}
+
+.submitItemLogin {
+  margin-top: 0;
+}

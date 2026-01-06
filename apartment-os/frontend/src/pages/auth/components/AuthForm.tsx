@@ -8,6 +8,7 @@ import {
 } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import styles from "./AuthForm.module.css";
 
 const { Title, Text } = Typography;
 
@@ -38,44 +39,29 @@ export const AuthForm: React.FC<AuthFormProps> = ({
       transition: { duration: 0.5, delay: 0.2 },
     },
   };
-
   return (
-    <div style={{ display: "flex", height: "100vh", overflow: "hidden" }}>
+    <div className={styles.container}>
       <motion.div
         variants={containerVariants}
         initial="hidden"
         animate="visible"
         style={{
-          flex: 1,
           background: `linear-gradient(135deg, ${token.colorPrimary} 0%, #001529 100%)`,
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-          color: "white",
-          padding: 40,
         }}
-        className="hidden-mobile"
+        className={`${styles.leftPanel} hidden-mobile`}
       >
         <motion.div
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.4, duration: 0.6 }}
-          style={{ textAlign: "center" }}
+          className={styles.leftPanelContent}
         >
-          <div style={{ fontSize: 60, marginBottom: 20 }}>🏢</div>
+          <div className={styles.logoEmoji}>🏢</div>
 
-          <Title level={1} style={{ color: "white", margin: 0 }}>
+          <Title level={1} className={styles.welcomeTitle}>
             {isLogin ? "ApartmentOS" : "Ailemize Katılın"}
           </Title>
-          <Text
-            style={{
-              color: "rgba(255,255,255,0.8)",
-              fontSize: 16,
-              display: "block",
-              marginTop: 10,
-            }}
-          >
+          <Text className={styles.welcomeSubtitle}>
             {isLogin
               ? "Site ve apartman yönetiminin en modern hali."
               : "Yüzlerce yönetici arasına katılın ve işlerinizi kolaylaştırın."}
@@ -83,23 +69,15 @@ export const AuthForm: React.FC<AuthFormProps> = ({
         </motion.div>
       </motion.div>
 
-      <div
-        style={{
-          flex: 1,
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          background: "#fff",
-        }}
-      >
+      <div className={styles.rightPanel}>
         <motion.div
           variants={formVariants}
           initial="hidden"
           animate="visible"
-          style={{ width: "100%", maxWidth: 420, padding: 24 }}
+          className={styles.formWrapper}
         >
-          <div style={{ textAlign: "center", marginBottom: 32 }}>
-            <Title level={2} style={{ marginBottom: 8 }}>
+          <div className={styles.formHeader}>
+            <Title level={2} className={styles.formTitle}>
               {isLogin ? "Tekrar Hoşgeldiniz" : "Hesap Oluştur"}
             </Title>
             <Text type="secondary">
@@ -180,13 +158,7 @@ export const AuthForm: React.FC<AuthFormProps> = ({
             </Form.Item>
 
             {isLogin && (
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  marginBottom: 24,
-                }}
-              >
+              <div className={styles.rememberContainer}>
                 <Form.Item name="remember" valuePropName="checked" noStyle>
                   <Checkbox>Beni Hatırla</Checkbox>
                 </Form.Item>
@@ -194,25 +166,27 @@ export const AuthForm: React.FC<AuthFormProps> = ({
               </div>
             )}
 
-            <Form.Item style={{ marginTop: isLogin ? 0 : 24 }}>
+            <Form.Item
+              className={isLogin ? styles.submitItemLogin : styles.submitItem}
+            >
               <Button
                 type="primary"
                 htmlType="submit"
                 block
                 loading={loading}
-                style={{ height: 45, fontSize: 16 }}
+                className={styles.submitButton}
               >
                 {isLogin ? "Giriş Yap" : "Kayıt Ol"}
               </Button>
             </Form.Item>
 
-            <div style={{ textAlign: "center" }}>
+            <div className={styles.footer}>
               <Text type="secondary">
                 {isLogin ? "Hesabınız yok mu? " : "Zaten hesabınız var mı? "}
               </Text>
               <Link
                 to={isLogin ? "/register" : "/login"}
-                style={{ fontWeight: 600 }}
+                className={styles.link}
               >
                 {isLogin ? "Kayıt Olun" : "Giriş Yapın"}
               </Link>
