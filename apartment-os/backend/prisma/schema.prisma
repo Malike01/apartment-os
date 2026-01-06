@@ -25,17 +25,18 @@ model User {
 
 // 2. Apartments
 model Property {
-  id        String   @id @default(uuid())
-  name      String
-  address   String?
-  city      String?
-  
-  managerId String
-  manager   User     @relation(fields: [managerId], references: [id])
+  id      String  @id @default(uuid())
+  name    String
+  address String?
+  city    String?
 
-  blocks    Block[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  managerId String
+  manager   User   @relation(fields: [managerId], references: [id])
+
+  blocks       Block[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  transactions Transaction[]
 
   @@map("properties")
 }
@@ -43,59 +44,85 @@ model Property {
 // 3. BLOKLAR
 model Block {
   id         String   @id @default(uuid())
-  name       String   // Example: "A Bloke"
+  name       String // Example: "A Bloke"
   propertyId String
   property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
-  
-  units      Unit[]
+
+  units Unit[]
 
   @@map("blocks")
 }
 
 // 4. DAİRELER (Bağımsız Bölümler)
 model Unit {
-  id         String   @id @default(uuid())
-  doorNumber String  
+  id         String  @id @default(uuid())
+  doorNumber String
   floor      Int
-  type       String?  // Example: "3+1"
-  
-  blockId    String
-  block      Block    @relation(fields: [blockId], references: [id], onDelete: Cascade)
+  type       String? // Example: "3+1"
 
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  blockId String
+  block   Block  @relation(fields: [blockId], references: [id], onDelete: Cascade)
 
-  residents  Resident[]
-  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  residents    Resident[]
+  transactions Transaction[]
+
   @@map("units")
 }
 
 model Resident {
-  id        String       @id @default(uuid())
-  fullName  String
-  phone     String?
-  email     String?
-  type      ResidentType 
-  isActive  Boolean      @default(true) 
-  
-  unitId    String
-  unit      Unit         @relation(fields: [unitId], references: [id], onDelete: Cascade)
+  id       String       @id @default(uuid())
+  fullName String
+  phone    String?
+  email    String?
+  type     ResidentType
+  isActive Boolean      @default(true)
 
-  createdAt DateTime     @default(now())
-  updatedAt DateTime     @updatedAt
+  unitId String
+  unit   Unit   @relation(fields: [unitId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@map("residents")
 }
 
 // ENUMS
 enum Role {
-  ADMIN   
-  MANAGER 
+  ADMIN
+  MANAGER
 }
 
 enum ResidentType {
-  OWNER  
-  TENANT  
+  OWNER
+  TENANT
+}
+
+// FINANCIAL MODEL
+enum TransactionType {
+  INCOME
+  EXPENSE
+}
+
+model Transaction {
+  id          String          @id @default(uuid())
+  amount      Decimal         @db.Decimal(10, 2)
+  description String
+  type        TransactionType
+  category    String // Elektrik, Su, Aidat vb.
+  date        DateTime        @default(now())
+
+  // relationships
+  propertyId String
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  unitId String?
+  unit   Unit?   @relation(fields: [unitId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
