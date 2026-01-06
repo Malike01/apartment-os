@@ -4,6 +4,7 @@ import "./index.css";
 import App from "./App.tsx";
 import { ConfigProvider } from "antd";
 import { COLORS, LAYOUT_CONFIG, FONT_SIZES } from "./constants";
+import "./utils/chartSetup";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
