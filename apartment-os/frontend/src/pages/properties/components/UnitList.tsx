@@ -1,9 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { Table, Button, Space, Tag, Popconfirm } from "antd";
-import { PlusOutlined, DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import {
+  PlusOutlined,
+  DeleteOutlined,
+  EditOutlined,
+  TeamOutlined,
+} from "@ant-design/icons";
 import { inventoryService } from "../../../api/services/inventoryService";
 import { UnitFormModal } from "./UnitFormModal";
 import type { Unit } from "@/types/inventory";
+import { ResidentsDrawer } from "./ResidentsDrawer";
 
 interface UnitListProps {
   blockId: string;
@@ -13,6 +19,11 @@ export const UnitList: React.FC<UnitListProps> = ({ blockId }) => {
   const [units, setUnits] = useState<Unit[]>([]);
   const [loading, setLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [selectedUnit, setSelectedUnit] = useState<{
+    id: string;
+    label: string;
+  } | null>(null);
 
   const fetchUnits = async () => {
     setLoading(true);
@@ -23,6 +34,14 @@ export const UnitList: React.FC<UnitListProps> = ({ blockId }) => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleOpenResidents = (unit: any) => {
+    setSelectedUnit({
+      id: unit.id,
+      label: `Kapı No: ${unit.doorNumber}`,
+    });
+    setDrawerOpen(true);
   };
 
   useEffect(() => {
@@ -44,9 +63,18 @@ export const UnitList: React.FC<UnitListProps> = ({ blockId }) => {
       render: (type: string) => (type ? <Tag color="blue">{type}</Tag> : "-"),
     },
     {
-      title: "Sakin Durumu",
-      key: "resident",
-      render: () => <Tag>Boş</Tag>,
+      title: "Sakinler",
+      key: "residents",
+      render: (_: any, record: any) => (
+        <Button
+          size="small"
+          type="default"
+          icon={<TeamOutlined />}
+          onClick={() => handleOpenResidents(record)}
+        >
+          Yönet
+        </Button>
+      ),
     },
     {
       title: "İşlemler",
@@ -98,6 +126,12 @@ export const UnitList: React.FC<UnitListProps> = ({ blockId }) => {
         onCancel={() => setIsModalOpen(false)}
         onSuccess={fetchUnits}
         blockId={blockId}
+      />
+      <ResidentsDrawer
+        open={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+        unitId={selectedUnit?.id || null}
+        unitLabel={selectedUnit?.label || ""}
       />
     </>
   );
