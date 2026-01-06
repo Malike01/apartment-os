@@ -6,6 +6,7 @@ import {
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { PrismaService } from '../prisma.service';
 import { TransactionType } from '@prisma/client';
+import { CreateBulkTransactionDto } from './dto/create-bulk-transaction.dto';
 
 @Injectable()
 export class TransactionsService {
@@ -88,6 +89,51 @@ export class TransactionsService {
       income,
       expense,
       balance: income - expense,
+    };
+  }
+
+  // Bulk Transaction
+  async createBulk(createBulkDto: CreateBulkTransactionDto, managerId: string) {
+    const { propertyId, amount, description, category } = createBulkDto;
+
+    const property = await this.prisma.property.findFirst({
+      where: { id: propertyId, managerId },
+      include: {
+        blocks: {
+          include: { units: true },
+        },
+      },
+    });
+
+    if (!property) {
+      throw new ForbiddenException('Bu işlem için yetkiniz yok.');
+    }
+
+    const allUnits = property.blocks.flatMap((block) => block.units);
+
+    if (allUnits.length === 0) {
+      throw new BadRequestException('Bu sitede henüz hiç daire kayıtlı değil.');
+    }
+
+    const transactionsData = allUnits.map((unit) => ({
+      amount: amount,
+      description: `${description} (Kapı No: ${unit.doorNumber})`,
+      category: category,
+      type: TransactionType.INCOME,
+      propertyId: propertyId,
+      unitId: unit.id,
+      date: new Date(),
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    }));
+
+    const result = await this.prisma.transaction.createMany({
+      data: transactionsData as any,
+    });
+
+    return {
+      message: `${result.count} adet daireye aidat borcu eklendi.`,
+      count: result.count,
     };
   }
 }
