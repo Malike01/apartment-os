@@ -26,6 +26,7 @@ import {
 } from "../../constants/financePage";
 import { BulkDuesModal } from "./components/BulkDuesModal";
 import { reportService } from "@api/services/reportService";
+import { useAppStore } from "@/store/useAppStore";
 
 const { Title, Text } = Typography;
 
@@ -35,19 +36,24 @@ const FinancePage: React.FC = () => {
     []
   );
 
-  const [selectedPropertyId, setSelectedPropertyId] = useState<string | null>(
-    null
-  );
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isBulkModalOpen, setIsBulkModalOpen] = useState(false);
+
+  const { selectedPropertyId, setSelectedPropertyId } = useAppStore();
 
   const selectedProperty = properties?.find((p) => p.id === selectedPropertyId);
 
   useEffect(() => {
-    if (properties && properties.length > 0 && !selectedPropertyId) {
-      setSelectedPropertyId(properties[0].id);
+    if (properties && properties.length > 0) {
+      const isValidSelection = properties.find(
+        (p) => p.id === selectedPropertyId
+      );
+
+      if (!selectedPropertyId || !isValidSelection) {
+        setSelectedPropertyId(properties[0].id);
+      }
     }
-  }, [properties]);
+  }, [properties, selectedPropertyId, setSelectedPropertyId]);
 
   const {
     data: transactions,
