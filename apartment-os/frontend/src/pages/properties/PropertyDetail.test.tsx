@@ -3,9 +3,9 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import PropertyDetail from "./PropertyDetail";
 import { propertyService } from "../../api/services/propertyService";
 import { inventoryService } from "../../api/services/inventoryService";
-import { createMockProperty } from "test/factories/propertyFactory";
-import { createMockBlock } from "test/factories/inventoryFactory";
 import { render } from "@/test/utils";
+import { createMockProperty } from "@/test/factories/propertyFactory";
+import { createMockBlock } from "@/test/factories/inventoryFactory";
 
 vi.mock("../../api/services/propertyService");
 vi.mock("../../api/services/inventoryService");

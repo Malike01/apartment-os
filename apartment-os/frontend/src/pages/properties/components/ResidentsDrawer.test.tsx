@@ -2,9 +2,9 @@ import { screen, waitFor, fireEvent } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { ResidentsDrawer } from "./ResidentsDrawer";
 import { residentService } from "../../../api/services/residentService";
-import { createMockResident } from "../../../../test/factories/residentFactory";
 import { ResidentType } from "../../../types/resident";
 import { render } from "@/test/utils";
+import { createMockResident } from "@/test/factories/residentFactory";
 
 vi.mock("../../../api/services/residentService");
 
