@@ -28,7 +28,7 @@ export const SIDEBAR_MENU_ITEMS: MenuItem[] = [
     path: APP_ROUTES.PROPERTIES,
   },
   {
-    key: "3",
+    key: APP_ROUTES.RESIDENTS,
     icon: <UserOutlined />,
     label: "Sakinler",
   },

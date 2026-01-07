@@ -26,7 +26,6 @@ export const DashboardLayout: React.FC = () => {
       <Sider breakpoint="lg" collapsedWidth="0">
         <div className={styles.logo}>ApartmentOS</div>
         <Menu
-          theme="dark"
           mode="inline"
           defaultSelectedKeys={["1"]}
           items={SIDEBAR_MENU_ITEMS.map((item) => ({

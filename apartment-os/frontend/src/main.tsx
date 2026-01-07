@@ -6,11 +6,11 @@ import { ConfigProvider } from "antd";
 import { COLORS, LAYOUT_CONFIG, FONT_SIZES } from "./constants";
 import "./utils/chartSetup";
 import { BrowserRouter } from "react-router-dom";
+import { color } from "chart.js/helpers";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <BrowserRouter>
-
       <ConfigProvider
         theme={{
           token: {
@@ -28,10 +28,19 @@ createRoot(document.getElementById("root")!).render(
             Layout: {
               colorBgBody: COLORS.BACKGROUND.BODY,
               colorBgHeader: COLORS.BACKGROUND.CONTAINER,
+              siderBg: COLORS.PRIMARY,
+              triggerBg: COLORS.BACKGROUND.BODY,
             },
             Card: {
               colorBgContainer: COLORS.BACKGROUND.CONTAINER,
               borderRadiusLG: LAYOUT_CONFIG.BORDER_RADIUS,
+            },
+            Menu: {
+              colorBgContainer: COLORS.PRIMARY,
+              colorItemText: "#fff",
+              colorItemTextHover: COLORS.BACKGROUND.CONTAINER,
+              colorItemTextSelected: COLORS.SECONDARY,
+              colorItemBgSelected: COLORS.BACKGROUND.BODY,
             },
           },
         }}
