@@ -1,0 +1,188 @@
+.pageContainer {
+    padding: 0;
+}
+
+.pageTitle {
+    font-size: 24px;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 24px;
+}
+
+/* Card Common Styles */
+.modernCard {
+    background: white;
+    border-radius: 20px;
+    border: 1px solid #f1f5f9;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    height: 100%;
+    padding: 24px;
+    position: relative;
+    overflow: hidden;
+}
+
+.modernCard:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.02);
+    border-color: transparent;
+}
+
+/* Stat Card Specifics */
+.statHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 16px;
+}
+
+.iconWrapper {
+    width: 56px;
+    height: 56px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    transition: transform 0.3s ease;
+}
+
+.modernCard:hover .iconWrapper {
+    transform: scale(1.1) rotate(5deg);
+}
+
+/* Icon Variations */
+.blueIcon {
+    background: #eff6ff;
+    color: #3b82f6;
+}
+
+.greenIcon {
+    background: #f0fdf4;
+    color: #22c55e;
+}
+
+.purpleIcon {
+    background: #f5f3ff;
+    color: #8b5cf6;
+}
+
+.orangeIcon {
+    background: #fff7ed;
+    color: #f97316;
+}
+
+.statContent {
+    display: flex;
+    flex-direction: column;
+}
+
+.statValue {
+    font-size: 32px;
+    font-weight: 800;
+    color: #0f172a;
+    line-height: 1.2;
+    margin-bottom: 4px;
+    letter-spacing: -0.02em;
+}
+
+.statLabel {
+    font-size: 14px;
+    color: #64748b;
+    font-weight: 500;
+}
+
+/* Trend Indicator (Optional) */
+.trend {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 13px;
+    font-weight: 600;
+    margin-top: 8px;
+}
+
+.trendUp {
+    color: #22c55e;
+}
+
+.trendDown {
+    color: #ef4444;
+}
+
+/* Chart Card Specifics */
+.chartHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+}
+
+.chartTitle {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1e293b;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.chartBody {
+    position: relative;
+    width: 100%;
+}
+
+/* Gradient Mods */
+.gradientCardBlue {
+    background: linear-gradient(135deg, #60A5FA 0%, #2563EB 100%);
+    border: none;
+}
+
+.gradientCardGreen {
+    background: linear-gradient(135deg, #34D399 0%, #059669 100%);
+    border: none;
+}
+
+.gradientCardPurple {
+    background: linear-gradient(135deg, #A78BFA 0%, #7C3AED 100%);
+    border: none;
+}
+
+.gradientCardOrange {
+    background: linear-gradient(135deg, #FBBF24 0%, #D97706 100%);
+    border: none;
+}
+
+.gradientCardBlue .statValue,
+.gradientCardBlue .statLabel,
+.gradientCardBlue .chartTitle,
+.gradientCardGreen .statValue,
+.gradientCardGreen .statLabel,
+.gradientCardGreen .chartTitle,
+.gradientCardPurple .statValue,
+.gradientCardPurple .statLabel,
+.gradientCardPurple .chartTitle,
+.gradientCardOrange .statValue,
+.gradientCardOrange .statLabel,
+.gradientCardOrange .chartTitle {
+    color: white;
+}
+
+.gradientCardBlue .statLabel,
+.gradientCardGreen .statLabel,
+.gradientCardPurple .statLabel,
+.gradientCardOrange .statLabel {
+    opacity: 0.9;
+}
+
+.gradientCardBlue .iconWrapper,
+.gradientCardGreen .iconWrapper,
+.gradientCardPurple .iconWrapper,
+.gradientCardOrange .iconWrapper {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+}
+
+.chartCard {
+    background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+}

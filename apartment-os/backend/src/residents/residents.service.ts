@@ -85,4 +85,26 @@ export class ResidentsService {
     if (result.count === 0) throw new NotFoundException('Sakin silinemedi.');
     return { message: 'Sakin silindi' };
   }
+
+  async findAllByManager(managerId: string) {
+    return this.prisma.resident.findMany({
+      where: {
+        unit: {
+          block: {
+            property: { managerId },
+          },
+        },
+      },
+      include: {
+        unit: {
+          include: {
+            block: {
+              include: { property: true },
+            },
+          },
+        },
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+  }
 }

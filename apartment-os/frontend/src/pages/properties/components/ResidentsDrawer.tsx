@@ -132,7 +132,7 @@ export const ResidentsDrawer: React.FC<ResidentsDrawerProps> = ({
       <Form form={form} layout="vertical" onFinish={handleAddResident}>
         <Form.Item
           name="type"
-          initialValue={ResidentType.Tenant}
+          initialValue={RESIDENT_TYPE_OPTIONS[0].value}
           rules={[{ required: true, message: "Seçiniz" }]}
         >
           <Select options={RESIDENT_TYPE_OPTIONS} />

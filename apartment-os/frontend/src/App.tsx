@@ -49,6 +49,10 @@ const FinancePage = lazy(() =>
   import("@/pages/finance/index").then((m) => ({ default: m.default }))
 );
 
+const ResidentsPage = lazy(() =>
+  import("@/pages/residents/index").then((m) => ({ default: m.default }))
+);
+
 function App() {
   return (
     <Suspense
@@ -68,8 +72,10 @@ function App() {
           <Route element={<MainLayout />}>
             <Route path="/" element={<Dashboard />} />
             <Route path="/properties" element={<Properties />} />
+            <Route path="/properties/:id/edit" element={<Properties />} />
             <Route path="/properties/:id" element={<PropertyDetail />} />
             <Route path="/finance" element={<FinancePage />} />
+            <Route path="/residents" element={<ResidentsPage />} />
           </Route>
         </Route>
 

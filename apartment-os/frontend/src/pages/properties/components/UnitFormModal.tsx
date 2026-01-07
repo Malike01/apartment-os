@@ -1,13 +1,15 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Modal, Form, Input, InputNumber, Select, message } from "antd";
 import { inventoryService } from "../../../api/services/inventoryService";
 import { UNIT_TYPES } from "../../../constants";
+import type { Unit } from "@/types/inventory";
 
 interface UnitFormModalProps {
   open: boolean;
   onCancel: () => void;
   onSuccess: () => void;
   blockId: string | null;
+  editingUnit?: Unit | null;
 }
 
 export const UnitFormModal: React.FC<UnitFormModalProps> = ({
@@ -15,22 +17,42 @@ export const UnitFormModal: React.FC<UnitFormModalProps> = ({
   onCancel,
   onSuccess,
   blockId,
+  editingUnit,
 }) => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    if (editingUnit) {
+      form.setFieldsValue({
+        doorNumber: editingUnit.doorNumber,
+        floor: editingUnit.floor,
+        type: editingUnit.type,
+      });
+    } else {
+      form.resetFields();
+    }
+  }, [editingUnit, open, form]);
+
   const handleSubmit = async (values: any) => {
-    if (!blockId) return;
+    if (!blockId && !editingUnit) return;
 
     setLoading(true);
     try {
-      await inventoryService.createUnit({ ...values, blockId });
-      message.success("Daire oluşturuldu.");
+      if (editingUnit) {
+        await inventoryService.updateUnit(editingUnit.id, values);
+        message.success("Daire güncellendi.");
+      } else {
+        await inventoryService.createUnit({ ...values, blockId });
+        message.success("Daire oluşturuldu.");
+      }
       form.resetFields();
       onSuccess();
       onCancel();
     } catch (error) {
-      message.error("Daire oluşturulamadı.");
+      message.error(
+        editingUnit ? "Daire güncellenemedi." : "Daire oluşturulamadı."
+      );
     } finally {
       setLoading(false);
     }
@@ -38,12 +60,12 @@ export const UnitFormModal: React.FC<UnitFormModalProps> = ({
 
   return (
     <Modal
-      title="Yeni Daire Ekle"
+      title={editingUnit ? "Daireyi Düzenle" : "Yeni Daire Ekle"}
       open={open}
       onCancel={onCancel}
       onOk={form.submit}
       confirmLoading={loading}
-      okText="Ekle"
+      okText={editingUnit ? "Güncelle" : "Ekle"}
     >
       <Form form={form} layout="vertical" onFinish={handleSubmit}>
         <div style={{ display: "flex", gap: 16 }}>

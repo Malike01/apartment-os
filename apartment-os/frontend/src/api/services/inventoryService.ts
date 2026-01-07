@@ -30,4 +30,16 @@ export const inventoryService = {
     const response = await api.post<Unit>(API_ROUTES.UNITS, data);
     return response.data;
   },
+
+  updateUnit: async (unitId: string, data: Partial<CreateUnitDto>) => {
+    const response = await api.patch<Unit>(
+      `${API_ROUTES.UNITS}/${unitId}`,
+      data
+    );
+    return response.data;
+  },
+
+  deleteUnit: async (unitId: string) => {
+    await api.delete(`${API_ROUTES.UNITS}/${unitId}`);
+  },
 };

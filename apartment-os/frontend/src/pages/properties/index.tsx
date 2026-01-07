@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button, Card, Col, Row, Typography, Empty, Spin, Tooltip } from "antd";
 import {
   PlusOutlined,
@@ -9,21 +9,49 @@ import { propertyService } from "../../api/services/propertyService";
 import { PropertyFormModal } from "./components/PropertyFormModal";
 import { COLORS } from "../../constants";
 import type { Property } from "@/types/property";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useFetch } from "@/hooks/useFetch";
 
 const { Title, Text } = Typography;
 
 const Properties: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-
+  const [editingProperty, setEditingProperty] = useState<Property | null>(null);
   const navigate = useNavigate();
+  const { id: editId } = useParams<{ id?: string }>();
 
   const {
     data: properties,
     loading,
     refetch: fetchProperties,
   } = useFetch<Property[]>(propertyService.getAll, []);
+
+  useEffect(() => {
+    if (editId && properties) {
+      const property = properties.find((p) => p.id === editId);
+      if (property) {
+        setEditingProperty(property);
+        setIsModalOpen(true);
+      }
+    }
+  }, [editId, properties]);
+
+  const handleOpenModal = (property?: Property) => {
+    if (property) {
+      setEditingProperty(property);
+    } else {
+      setEditingProperty(null);
+    }
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setEditingProperty(null);
+    if (editId) {
+      navigate("/properties");
+    }
+  };
 
   return (
     <div>
@@ -45,7 +73,7 @@ const Properties: React.FC = () => {
           type="primary"
           icon={<PlusOutlined />}
           size="large"
-          onClick={() => setIsModalOpen(true)}
+          onClick={() => handleOpenModal()}
         >
           Yeni Site Ekle
         </Button>
@@ -60,7 +88,7 @@ const Properties: React.FC = () => {
           image={Empty.PRESENTED_IMAGE_SIMPLE}
           description="Henüz kayıtlı bir siteniz yok."
         >
-          <Button type="primary" onClick={() => setIsModalOpen(true)}>
+          <Button type="primary" onClick={() => handleOpenModal()}>
             İlk Siteni Ekle
           </Button>
         </Empty>
@@ -80,7 +108,12 @@ const Properties: React.FC = () => {
                     </Button>
                   </Tooltip>,
                   <Tooltip title="Ayarlar">
-                    <Button type="link">Düzenle</Button>
+                    <Button
+                      type="link"
+                      onClick={() => handleOpenModal(property)}
+                    >
+                      Düzenle
+                    </Button>
                   </Tooltip>,
                 ]}
               >
@@ -129,8 +162,12 @@ const Properties: React.FC = () => {
 
       <PropertyFormModal
         open={isModalOpen}
-        onCancel={() => setIsModalOpen(false)}
-        onSuccess={fetchProperties}
+        onCancel={handleCloseModal}
+        onSuccess={() => {
+          fetchProperties();
+          handleCloseModal();
+        }}
+        editingProperty={editingProperty}
       />
     </div>
   );

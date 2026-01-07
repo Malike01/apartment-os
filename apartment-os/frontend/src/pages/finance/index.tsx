@@ -148,6 +148,12 @@ const FinancePage: React.FC = () => {
           >
             Yeni İşlem
           </Button>
+          <Button
+            disabled={!selectedPropertyId}
+            onClick={() => setIsBulkModalOpen(true)}
+          >
+            Toplu Aidat Dağıt
+          </Button>
         </div>
       </div>
       {!selectedPropertyId ? (

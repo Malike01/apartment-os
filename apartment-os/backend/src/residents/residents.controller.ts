@@ -31,7 +31,10 @@ export class ResidentsController {
   // GET /residents?unitId=...
   @Get()
   findAll(@Query('unitId') unitId: string, @GetUser('userId') userId: string) {
-    return this.residentsService.findAllByUnit(unitId, userId);
+    if (unitId) {
+      return this.residentsService.findAllByUnit(unitId, userId);
+    }
+    return this.residentsService.findAllByManager(userId);
   }
 
   @Get(':id')

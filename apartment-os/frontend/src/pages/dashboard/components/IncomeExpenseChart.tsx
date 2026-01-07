@@ -1,7 +1,8 @@
 import React from "react";
 import { Bar } from "react-chartjs-2";
-import { Card } from "antd";
 import { COLORS } from "../../../constants";
+import styles from "../Dashboard.module.css";
+import { DollarOutlined } from "@ant-design/icons";
 
 interface IncomeExpenseChartProps {
   data: Array<{ month: string; income: number; expense: number }>;
@@ -40,10 +41,18 @@ export const IncomeExpenseChart: React.FC<IncomeExpenseChartProps> = ({
   };
 
   return (
-    <Card title="Son 6 Aylık Finansal Durum" style={{ height: "100%" }}>
+    <div className={`${styles.modernCard} ${styles.chartCard}`}>
+      <div className={styles.chartHeader}>
+        <div className={styles.chartTitle}>
+          <div className={`${styles.iconWrapper} ${styles.blueIcon}`} style={{ width: 32, height: 32, fontSize: 16, borderRadius: 8 }}>
+            <DollarOutlined />
+          </div>
+          Son 6 Aylık Finansal Durum
+        </div>
+      </div>
       <div style={{ height: 300 }}>
         <Bar data={chartData} options={options} />
       </div>
-    </Card>
+    </div>
   );
 };
