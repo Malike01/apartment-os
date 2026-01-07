@@ -1,36 +1,55 @@
 import React, { useEffect } from "react";
 import { Modal, Form, Input, message } from "antd";
 import { propertyService } from "../../../api/services/propertyService";
-import type { CreatePropertyDto } from "@/types/property";
+import type { CreatePropertyDto, Property } from "@/types/property";
 
 interface PropertyFormModalProps {
   open: boolean;
   onCancel: () => void;
   onSuccess: () => void;
+  editingProperty?: Property | null;
 }
 
 export const PropertyFormModal: React.FC<PropertyFormModalProps> = ({
   open,
   onCancel,
   onSuccess,
+  editingProperty,
 }) => {
   const [form] = Form.useForm();
   const [loading, setLoading] = React.useState(false);
 
   useEffect(() => {
-    if (!open) form.resetFields();
-  }, [open, form]);
+    if (editingProperty) {
+      form.setFieldsValue({
+        name: editingProperty.name,
+        city: editingProperty.city,
+        address: editingProperty.address,
+      });
+    } else {
+      form.resetFields();
+    }
+  }, [editingProperty, open, form]);
 
   const handleSubmit = async (values: CreatePropertyDto) => {
     setLoading(true);
     try {
-      await propertyService.create(values);
-      message.success("Site başarıyla oluşturuldu");
+      if (editingProperty) {
+        await propertyService.update(editingProperty.id, values);
+        message.success("Site başarıyla güncellendi");
+      } else {
+        await propertyService.create(values);
+        message.success("Site başarıyla oluşturuldu");
+      }
       onSuccess();
       onCancel();
     } catch (error) {
       console.error(error);
-      message.error("Site oluşturulurken bir hata oluştu");
+      message.error(
+        editingProperty
+          ? "Site güncellenirken bir hata oluştu"
+          : "Site oluşturulurken bir hata oluştu"
+      );
     } finally {
       setLoading(false);
     }
@@ -38,12 +57,12 @@ export const PropertyFormModal: React.FC<PropertyFormModalProps> = ({
 
   return (
     <Modal
-      title="Yeni Site / Apartman Ekle"
+      title={editingProperty ? "Siteyi Düzenle" : "Yeni Site / Apartman Ekle"}
       open={open}
       onCancel={onCancel}
       onOk={form.submit}
       confirmLoading={loading}
-      okText="Oluştur"
+      okText={editingProperty ? "Güncelle" : "Oluştur"}
       cancelText="İptal"
     >
       <Form form={form} layout="vertical" onFinish={handleSubmit}>

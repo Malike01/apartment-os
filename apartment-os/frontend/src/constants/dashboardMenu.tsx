@@ -31,6 +31,7 @@ export const SIDEBAR_MENU_ITEMS: MenuItem[] = [
     key: APP_ROUTES.RESIDENTS,
     icon: <UserOutlined />,
     label: "Sakinler",
+    path: APP_ROUTES.RESIDENTS,
   },
   {
     key: APP_ROUTES.FINANCE,

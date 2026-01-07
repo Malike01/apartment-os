@@ -11,6 +11,11 @@ export const residentService = {
     return response.data;
   },
 
+  getAll: async () => {
+    const response = await api.get<Resident[]>(API_ROUTES.RESIDENTS);
+    return response.data;
+  },
+
   create: async (data: CreateResidentDto) => {
     const response = await api.post<Resident>(API_ROUTES.RESIDENTS, data);
     return response.data;

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Table, Button, Space, Tag, Popconfirm } from "antd";
+import { Table, Button, Space, Tag, Popconfirm, message } from "antd";
 import {
   PlusOutlined,
   DeleteOutlined,
@@ -10,6 +10,7 @@ import { inventoryService } from "../../../api/services/inventoryService";
 import { UnitFormModal } from "./UnitFormModal";
 import { useFetch } from "@/hooks/useFetch";
 import { ResidentsDrawer } from "./ResidentsDrawer";
+import type { Unit } from "@/types/inventory";
 
 interface UnitListProps {
   blockId: string;
@@ -22,6 +23,8 @@ export const UnitList: React.FC<UnitListProps> = ({ blockId }) => {
     id: string;
     label: string;
   } | null>(null);
+  const [editingUnit, setEditingUnit] = useState<Unit | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
   const {
     data: units,
@@ -35,6 +38,29 @@ export const UnitList: React.FC<UnitListProps> = ({ blockId }) => {
       label: `Kapı No: ${unit.doorNumber}`,
     });
     setDrawerOpen(true);
+  };
+
+  const handleEdit = (unit: Unit) => {
+    setEditingUnit(unit);
+    setIsModalOpen(true);
+  };
+
+  const handleDelete = async (unitId: string) => {
+    setDeleting(true);
+    try {
+      await inventoryService.deleteUnit(unitId);
+      message.success("Daire silindi.");
+      refetch();
+    } catch (error) {
+      message.error("Daire silinemedi.");
+    } finally {
+      setDeleting(false);
+    }
+  };
+
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+    setEditingUnit(null);
   };
 
   const columns = [
@@ -68,15 +94,27 @@ export const UnitList: React.FC<UnitListProps> = ({ blockId }) => {
     {
       title: "İşlemler",
       key: "actions",
-      render: () => (
+      render: (_: any, record: Unit) => (
         <Space>
-          <Button type="text" size="small" icon={<EditOutlined />} />
+          <Button
+            type="text"
+            size="small"
+            icon={<EditOutlined />}
+            onClick={() => handleEdit(record)}
+          />
           <Popconfirm
             title="Silmek istediğine emin misin?"
             okText="Evet"
             cancelText="Hayır"
+            onConfirm={() => handleDelete(record.id)}
           >
-            <Button type="text" danger size="small" icon={<DeleteOutlined />} />
+            <Button
+              type="text"
+              danger
+              size="small"
+              icon={<DeleteOutlined />}
+              loading={deleting}
+            />
           </Popconfirm>
         </Space>
       ),
@@ -112,9 +150,10 @@ export const UnitList: React.FC<UnitListProps> = ({ blockId }) => {
 
       <UnitFormModal
         open={isModalOpen}
-        onCancel={() => setIsModalOpen(false)}
+        onCancel={handleModalClose}
         onSuccess={refetch}
         blockId={blockId}
+        editingUnit={editingUnit}
       />
       <ResidentsDrawer
         open={drawerOpen}

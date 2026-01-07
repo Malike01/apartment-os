@@ -28,19 +28,19 @@ createRoot(document.getElementById("root")!).render(
             Layout: {
               colorBgBody: COLORS.BACKGROUND.BODY,
               colorBgHeader: COLORS.BACKGROUND.CONTAINER,
-              siderBg: COLORS.PRIMARY,
-              triggerBg: COLORS.BACKGROUND.BODY,
+              siderBg: COLORS.BACKGROUND.CONTAINER,
+              triggerBg: COLORS.BACKGROUND.CONTAINER,
+              triggerColor: COLORS.PRIMARY,
             },
             Card: {
               colorBgContainer: COLORS.BACKGROUND.CONTAINER,
               borderRadiusLG: LAYOUT_CONFIG.BORDER_RADIUS,
             },
             Menu: {
-              colorBgContainer: COLORS.PRIMARY,
-              colorItemText: "#fff",
-              colorItemTextHover: COLORS.BACKGROUND.CONTAINER,
-              colorItemTextSelected: COLORS.SECONDARY,
-              colorItemBgSelected: COLORS.BACKGROUND.BODY,
+              colorItemText: COLORS.PRIMARY,
+              colorItemTextHover: COLORS.PRIMARY,
+              colorItemTextSelected: COLORS.BACKGROUND.BODY,
+              colorItemBgSelected: COLORS.PRIMARY,
             },
           },
         }}

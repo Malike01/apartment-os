@@ -1,10 +1,16 @@
 import React from "react";
-import { Col, Row, Statistic, Card, Spin } from "antd";
-import { BankOutlined, TeamOutlined } from "@ant-design/icons";
+import { Col, Row, Spin } from "antd";
+import {
+  BankOutlined,
+  TeamOutlined,
+  HomeOutlined,
+  AppstoreOutlined,
+} from "@ant-design/icons";
 import { useFetch } from "../../hooks/useFetch";
 import { dashboardService } from "../../api/services/dashboardService";
 import { IncomeExpenseChart } from "./components/IncomeExpenseChart";
 import { OccupancyChart } from "./components/OccupancyChart";
+import styles from "./Dashboard.module.css";
 
 const Dashboard: React.FC = () => {
   const { data, loading } = useFetch(dashboardService.getSummary, []);
@@ -20,38 +26,66 @@ const Dashboard: React.FC = () => {
     <div>
       <h2 style={{ marginBottom: 24 }}>Genel Bakış</h2>
 
-      <Row gutter={16} style={{ marginBottom: 24 }}>
-        <Col span={6}>
-          <Card>
-            <Statistic
-              title="Toplam Site"
-              value={data?.counts.properties}
-              prefix={<BankOutlined />}
-            />
-          </Card>
+      <Row gutter={[24, 24]} style={{ marginBottom: 24 }}>
+        <Col xs={24} sm={12} lg={6}>
+          <div className={`${styles.modernCard} ${styles.gradientCardBlue}`}>
+            <div className={styles.statHeader}>
+              <div className={`${styles.iconWrapper} ${styles.blueIcon}`}>
+                <BankOutlined />
+              </div>
+            </div>
+            <div className={styles.statContent}>
+              <div className={styles.statValue}>
+                {data?.counts.properties || 0}
+              </div>
+              <div className={styles.statLabel}>Toplam Site</div>
+            </div>
+          </div>
         </Col>
-        <Col span={6}>
-          <Card>
-            <Statistic
-              title="Toplam Sakin"
-              value={data?.counts.residents}
-              prefix={<TeamOutlined />}
-            />
-          </Card>
+        <Col xs={24} sm={12} lg={6}>
+          <div className={`${styles.modernCard} ${styles.gradientCardGreen}`}>
+            <div className={styles.statHeader}>
+              <div className={`${styles.iconWrapper} ${styles.greenIcon}`}>
+                <TeamOutlined />
+              </div>
+            </div>
+            <div className={styles.statContent}>
+              <div className={styles.statValue}>
+                {data?.counts.residents || 0}
+              </div>
+              <div className={styles.statLabel}>Toplam Sakin</div>
+            </div>
+          </div>
         </Col>
-        <Col span={6}>
-          <Card>
-            <Statistic title="Toplam Daire" value={data?.occupancy.total} />
-          </Card>
+        <Col xs={24} sm={12} lg={6}>
+          <div className={`${styles.modernCard} ${styles.gradientCardPurple}`}>
+            <div className={styles.statHeader}>
+              <div className={`${styles.iconWrapper} ${styles.purpleIcon}`}>
+                <AppstoreOutlined />
+              </div>
+            </div>
+            <div className={styles.statContent}>
+              <div className={styles.statValue}>
+                {data?.occupancy.total || 0}
+              </div>
+              <div className={styles.statLabel}>Toplam Daire</div>
+            </div>
+          </div>
         </Col>
-        <Col span={6}>
-          <Card>
-            <Statistic
-              title="Dolu Daire"
-              value={data?.occupancy.filled}
-              valueStyle={{ color: "#3f8600" }}
-            />
-          </Card>
+        <Col xs={24} sm={12} lg={6}>
+          <div className={`${styles.modernCard} ${styles.gradientCardOrange}`}>
+            <div className={styles.statHeader}>
+              <div className={`${styles.iconWrapper} ${styles.orangeIcon}`}>
+                <HomeOutlined />
+              </div>
+            </div>
+            <div className={styles.statContent}>
+              <div className={styles.statValue}>
+                {data?.occupancy.filled || 0}
+              </div>
+              <div className={styles.statLabel}>Dolu Daire</div>
+            </div>
+          </div>
         </Col>
       </Row>
 

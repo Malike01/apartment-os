@@ -13,6 +13,18 @@ export interface Resident {
   type: ResidentType;
   unitId: string;
   createdAt: string;
+
+  unit?: {
+    id: string;
+    doorNumber: string;
+    block: {
+      name: string;
+      property: {
+        name: string;
+        city?: string;
+      };
+    };
+  };
 }
 
 export interface CreateResidentDto {

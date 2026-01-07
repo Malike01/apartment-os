@@ -17,4 +17,12 @@ export const propertyService = {
     const response = await api.get<Property>(`${API_ROUTES.PROPERTIES}/${id}`);
     return response.data;
   },
+
+  update: async (id: string, data: Partial<CreatePropertyDto>) => {
+    const response = await api.patch<Property>(
+      `${API_ROUTES.PROPERTIES}/${id}`,
+      data
+    );
+    return response.data;
+  },
 };
