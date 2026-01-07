@@ -6,6 +6,8 @@
 <img width="1919" height="946" alt="image" src="https://github.com/user-attachments/assets/c473b669-dabb-4620-b522-35341d6cbe98" />
 <img width="1919" height="944" alt="image" src="https://github.com/user-attachments/assets/e2928473-035a-4d6b-b533-ea4cfba0aa59" />
 
+https://github.com/user-attachments/assets/34e394b8-f330-47d5-96d6-09e0ea296282
+
 ApartmentOS is a modern B2B SaaS solution developed for building and facility management firms. It features multi-site management, comprehensive financial tracking, and a resident database system.
 
 This project is designed to streamline operational workflows, allowing managers to oversee their entire portfolio from a single screen.
